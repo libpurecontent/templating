@@ -1,7 +1,7 @@
 <?php
 
 # Class providing templating pre-processing methods
-# Version 0.9.0
+# Version 0.9.1
 class templating
 {
 	# Function to add placeholder surrounds to a raw HTML page
@@ -206,8 +206,27 @@ class templating
 	
 	
 	# Function to push replacements into the template
-	public static function doTemplateSubstitution ($templateHtml, $replacements)
+	public static function doTemplateSubstitution ($templateHtml, $replacements, $styleDirectory = false)
 	{
+		# Resolve includes, enabled if a style directory is specified
+		#!# Currently does not support recursive includes
+		#!# Currently supports only files specified relative from the style directory
+		if ($styleDirectory) {
+			$includes = array ();
+			preg_match_all ("/{include file='([^']+)'}/", $templateHtml, $matches, PREG_SET_ORDER);
+			if ($matches) {
+				foreach ($matches as $match) {
+					$placeholder = $match[0];
+					$filename = $match[1];
+					$file = $_SERVER['DOCUMENT_ROOT'] . $styleDirectory . '/' . $filename;
+					if (file_exists ($file)) {
+						$includedTemplate = file_get_contents ($file);
+						$templateHtml = str_replace ($placeholder, $includedTemplate, $templateHtml);
+					}
+				}
+			}
+		}
+		
 		# Convert to Smarty-format placeholders
 		$substitutions = array ();
 		foreach ($replacements as $find => $replace) {
