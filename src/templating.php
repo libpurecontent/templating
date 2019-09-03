@@ -1,7 +1,7 @@
 <?php
 
 # Class providing templating pre-processing methods
-# Version 0.9.1
+# Version 0.9.2
 class templating
 {
 	# Function to add placeholder surrounds to a raw HTML page
@@ -190,7 +190,7 @@ class templating
 	public static function commentsToPlaceholders ($html, &$replacedPlaceholders = array ())
 	{
 		# Cache matched placeholder comments; note \1 is a backreference to ensure the opening and closing tags match, and the s modifier enables multiple-line matches
-		$regexp = '|' . '<!--\s+\{\$([^}]+)\}\s+-->(.*)<!--\s+/\{\$\1\}\s+-->' . '|s';
+		$regexp = '|' . '<!--\s+\{\$([^}]+)\}\s+-->(.*)<!--\s+/\{\$\1\}\s+-->' . '|sU';		// Ungreedy used to support multiple replacements of same placeholder
 		if (preg_match_all ($regexp, $html, $matches, PREG_SET_ORDER)) {
 			foreach ($matches as $match) {
 				$replacedPlaceholders[$match[1]] = $match[2];		// placeholdername => html
