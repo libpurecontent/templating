@@ -1,7 +1,6 @@
 <?php
 
 # Class providing templating pre-processing methods
-# Version 0.9.2
 class templating
 {
 	# Function to add placeholder surrounds to a raw HTML page
